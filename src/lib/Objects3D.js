@@ -140,10 +140,10 @@ export function createParticleField(count = 1000, color = 0x00ffff) {
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   const material = new THREE.PointsMaterial({
-    size: 0.05,
+    size: 0.03,
     vertexColors: true,
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.3,
     blending: THREE.AdditiveBlending
   });
 

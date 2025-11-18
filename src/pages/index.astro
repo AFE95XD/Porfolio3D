@@ -335,13 +335,7 @@ import Layout from '../layouts/Layout.astro';
     import { ScrollAnimations } from '../lib/ScrollAnimations.js';
     import {
       createHeroCentralObject,
-      createOrbitalSphere,
-      createMorphingShape,
-      createParticleSphere,
-      createGeometricTunnel,
-      createHelix,
-      createInteractiveParticles,
-      createDNAHelix
+      createParticleField
     } from '../lib/Objects3D.js';
 
     let sceneManager;
@@ -360,50 +354,10 @@ import Layout from '../layouts/Layout.astro';
       heroCentralObject.position.set(0, 0, 0);
       sceneManager.addObject(heroCentralObject);
 
-      // Esferas orbitales alrededor del objeto central
-      const orbitalColors = [0x00ffff, 0xff00ff, 0x00ff00, 0xffff00, 0xff0088];
-      for (let i = 0; i < 5; i++) {
-        const orbital = createOrbitalSphere(
-          0.2,
-          4,
-          orbitalColors[i],
-          (i / 5) * Math.PI * 2
-        );
-        sceneManager.addObject(orbital);
-      }
-
-      // ===== ABOUT SECTION =====
-      // Esfera de partículas que se expande/contrae
-      const particleSphere = createParticleSphere(3000, 4);
-      particleSphere.position.set(0, 0, -15);
-      sceneManager.addObject(particleSphere);
-
-      // Morphing shape
-      const morphingShape = createMorphingShape();
-      morphingShape.position.set(6, 2, -8);
-      sceneManager.addObject(morphingShape);
-
-      // ===== PROJECTS SECTION =====
-      // Túnel geométrico
-      const tunnel = createGeometricTunnel(30);
-      tunnel.position.set(0, 0, -40);
-      sceneManager.addObject(tunnel);
-
-      // ===== EXPERIENCE SECTION =====
-      // DNA Helix
-      const dnaHelix = createDNAHelix(80, 18);
-      dnaHelix.position.set(-5, 0, -60);
-      sceneManager.addObject(dnaHelix);
-
-      // Helix simple
-      const helix = createHelix(60, 25, 2.5);
-      helix.position.set(5, 0, -60);
-      sceneManager.addObject(helix);
-
-      // ===== PARTÍCULAS DE FONDO =====
-      // Partículas interactivas que responden al mouse
-      const interactiveParticles = createInteractiveParticles(4000);
-      sceneManager.addObject(interactiveParticles);
+      // ===== PARTÍCULAS DE FONDO SUTILES =====
+      // Solo partículas mínimas para ambiente espacial
+      const particles = createParticleField(800);
+      sceneManager.addObject(particles);
 
       // ===== SCROLL ANIMATIONS =====
       scrollAnimations = new ScrollAnimations(sceneManager);
@@ -493,6 +447,10 @@ import Layout from '../layouts/Layout.astro';
       text-align: center;
       z-index: 1;
       position: relative;
+      padding: 3rem;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
     }
 
     .hero-title {
