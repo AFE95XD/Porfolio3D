@@ -1,0 +1,19 @@
+import { defineConfig } from 'astro/config';
+
+// https://astro.build/config
+export default defineConfig({
+  vite: {
+    optimizeDeps: {
+      exclude: ['three']
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'three': ['three']
+          }
+        }
+      }
+    }
+  }
+});
