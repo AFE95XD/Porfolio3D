@@ -208,74 +208,97 @@ export function positionRandomly(object, rangeX = 10, rangeY = 10, rangeZ = 10) 
 // ========== OBJETOS MEJORADOS CON SCROLL CONTROL ==========
 
 /**
- * OBJETO CENTRAL - Rota directamente con el scroll (como la lata de Brew District)
- * Este es el objeto hero principal
+ * OBJETO CENTRAL - Lata 3D metálica realista (inspirado en Brew District)
+ * Material sólido con reflejos, sin wireframe
  */
 export function createHeroCentralObject() {
-  // Crear un grupo para combinar múltiples geometrías
   const group = new THREE.Group();
 
-  // Cilindro central (como una lata)
-  const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 2.5, 32);
+  // ===== CILINDRO PRINCIPAL (CUERPO DE LA LATA) =====
+  const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 2.5, 64); // Más segmentos para suavidad
+
+  // Material metálico SÓLIDO con gradiente naranja cálido
   const cylinderMaterial = new THREE.MeshStandardMaterial({
-    color: 0x00ffff,
-    emissive: 0x00ffff,
-    emissiveIntensity: 0.6,
-    metalness: 0.9,
-    roughness: 0.1,
-    transparent: true,
-    opacity: 0.95
+    color: 0xE8A66F, // Naranja claro #E8A66F
+    metalness: 0.85, // Muy metálico
+    roughness: 0.15, // Poco rugoso para reflejos brillantes
+    emissive: 0xD4834F, // Emisión naranja cálido #D4834F
+    emissiveIntensity: 0.2, // Brillo sutil
   });
   const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+  cylinder.castShadow = true;
+  cylinder.receiveShadow = true;
 
-  // Anillos decorativos
+  // ===== TAPAS SUPERIOR E INFERIOR =====
+  const capGeometry = new THREE.CylinderGeometry(1.05, 1.05, 0.1, 64);
+  const capMaterial = new THREE.MeshStandardMaterial({
+    color: 0xD4834F, // Naranja más oscuro para contraste
+    metalness: 0.95,
+    roughness: 0.05, // Muy brillante
+    emissive: 0xC47340,
+    emissiveIntensity: 0.15,
+  });
+
+  const topCap = new THREE.Mesh(capGeometry, capMaterial);
+  topCap.position.y = 1.3;
+  topCap.castShadow = true;
+
+  const bottomCap = new THREE.Mesh(capGeometry, capMaterial);
+  bottomCap.position.y = -1.3;
+  bottomCap.castShadow = true;
+
+  // ===== ANILLOS DECORATIVOS (DORADOS) =====
   const ring1 = new THREE.Mesh(
-    new THREE.TorusGeometry(1.1, 0.05, 16, 100),
+    new THREE.TorusGeometry(1.08, 0.04, 16, 100),
     new THREE.MeshStandardMaterial({
-      color: 0xff00ff,
-      emissive: 0xff00ff,
-      emissiveIntensity: 0.8,
+      color: 0xFFB347, // Dorado claro
       metalness: 1,
-      roughness: 0
+      roughness: 0.1,
+      emissive: 0xE8A66F,
+      emissiveIntensity: 0.3,
     })
   );
   ring1.rotation.x = Math.PI / 2;
-  ring1.position.y = 0.8;
+  ring1.position.y = 0.9;
+  ring1.castShadow = true;
 
   const ring2 = ring1.clone();
-  ring2.position.y = -0.8;
+  ring2.position.y = -0.9;
 
-  // Wireframe exterior
-  const wireframeGeometry = new THREE.CylinderGeometry(1.2, 1.2, 2.7, 32);
-  const wireframeMaterial = new THREE.MeshBasicMaterial({
-    color: 0x00ffff,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.3
+  // ===== BANDA CENTRAL (ACENTO) =====
+  const bandGeometry = new THREE.CylinderGeometry(1.02, 1.02, 0.3, 64);
+  const bandMaterial = new THREE.MeshStandardMaterial({
+    color: 0xFFD700, // Dorado brillante
+    metalness: 1,
+    roughness: 0.05,
+    emissive: 0xFFB347,
+    emissiveIntensity: 0.4,
   });
-  const wireframe = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
+  const band = new THREE.Mesh(bandGeometry, bandMaterial);
+  band.position.y = 0;
+  band.castShadow = true;
 
+  // Ensamblar grupo
   group.add(cylinder);
+  group.add(topCap);
+  group.add(bottomCap);
   group.add(ring1);
   group.add(ring2);
-  group.add(wireframe);
+  group.add(band);
 
-  // Animación controlada por scroll
+  // ===== ANIMACIÓN SUAVE Y PROFESIONAL =====
   group.userData.animate = (mesh, time, scrollY) => {
-    // Rotación directamente proporcional al scroll
-    mesh.rotation.y = scrollY * 0.003;
-    mesh.rotation.x = scrollY * 0.001;
+    // Rotación fluida con scroll
+    mesh.rotation.y = scrollY * 0.002; // Más lento y suave
+    mesh.rotation.x = Math.sin(time * 0.2) * 0.05; // Oscilación muy sutil
 
-    // Pequeña rotación adicional basada en tiempo
-    mesh.rotation.z = Math.sin(time * 0.5) * 0.1;
-
-    // Zoom dramático basado en scroll
-    const scrollProgress = Math.min(scrollY / 1000, 1);
-    const scale = 1 + scrollProgress * 0.5;
+    // Zoom progresivo con scroll
+    const scrollProgress = Math.min(scrollY / 1500, 1);
+    const scale = 1 + scrollProgress * 0.3; // Menos dramático
     mesh.scale.setScalar(scale);
 
-    // Movimiento vertical suave
-    mesh.position.y = Math.sin(time * 0.3) * 0.2;
+    // Levitación suave
+    mesh.position.y = Math.sin(time * 0.4) * 0.15;
   };
 
   return group;

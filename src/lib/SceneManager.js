@@ -45,24 +45,48 @@ export class SceneManager {
   }
 
   setupLights() {
-    // Luz ambiental
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // ===== ILUMINACIÓN PROFESIONAL PARA METAL =====
+
+    // Luz ambiental cálida (base general)
+    const ambientLight = new THREE.AmbientLight(0xFFE4B5, 0.4); // Tono melocotón suave
     this.scene.add(ambientLight);
 
-    // Luces direccionales para mejor visualización
-    const directionalLight1 = new THREE.DirectionalLight(0x00ffff, 1);
-    directionalLight1.position.set(5, 5, 5);
-    this.scene.add(directionalLight1);
+    // Luz direccional principal (key light) - naranja cálido
+    const keyLight = new THREE.DirectionalLight(0xFFB347, 1.2); // Naranja dorado
+    keyLight.position.set(5, 8, 5);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    this.scene.add(keyLight);
 
-    const directionalLight2 = new THREE.DirectionalLight(0xff00ff, 0.5);
-    directionalLight2.position.set(-5, -5, -5);
-    this.scene.add(directionalLight2);
+    // Luz de relleno (fill light) - naranja más suave
+    const fillLight = new THREE.DirectionalLight(0xFFD9A0, 0.6); // Naranja pastel
+    fillLight.position.set(-5, 3, -3);
+    this.scene.add(fillLight);
 
-    // Punto de luz animada
-    const pointLight = new THREE.PointLight(0x00ffff, 2, 100);
-    pointLight.position.set(0, 0, 10);
-    this.scene.add(pointLight);
-    this.animatedLight = pointLight;
+    // Luz de contorno (rim light) - dorado brillante
+    const rimLight = new THREE.DirectionalLight(0xFFD700, 0.8); // Dorado puro
+    rimLight.position.set(0, -3, -5);
+    this.scene.add(rimLight);
+
+    // Luces puntuales para reflejos especulares
+    const spotLight1 = new THREE.PointLight(0xFFB347, 1.5, 20);
+    spotLight1.position.set(3, 4, 3);
+    this.scene.add(spotLight1);
+
+    const spotLight2 = new THREE.PointLight(0xFFD9A0, 1.2, 20);
+    spotLight2.position.set(-3, 2, 4);
+    this.scene.add(spotLight2);
+    this.animatedLight = spotLight2; // Esta se animará
+
+    // Luz de acento desde abajo (para brillo inferior)
+    const accentLight = new THREE.PointLight(0xE8A66F, 0.8, 15);
+    accentLight.position.set(0, -2, 0);
+    this.scene.add(accentLight);
+
+    // Habilitar sombras en el renderer
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   }
 
   addObject(object) {
