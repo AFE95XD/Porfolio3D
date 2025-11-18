@@ -333,6 +333,7 @@ import Layout from '../layouts/Layout.astro';
   <script>
     import { SceneManager } from '../lib/SceneManager.js';
     import { ScrollAnimations } from '../lib/ScrollAnimations.js';
+    import { gsap } from 'gsap';
     import {
       createHeroCentralObject,
       createParticleField
@@ -361,21 +362,105 @@ import Layout from '../layouts/Layout.astro';
 
       // ===== SCROLL ANIMATIONS =====
       scrollAnimations = new ScrollAnimations(sceneManager);
-      scrollAnimations.setupFadeIn('.fade-in');
 
-      // Setup stagger con delays personalizados
-      document.querySelectorAll('[data-delay]').forEach((el) => {
-        const delay = parseFloat(el.dataset.delay || 0);
-        setTimeout(() => {
-          el.classList.add('active');
-        }, delay * 1000);
+      // ===== ANIMACIONES GSAP AVANZADAS =====
+
+      // 1. Hero Title - Entrada dramática
+      gsap.from('.hero-title', {
+        opacity: 0,
+        y: 100,
+        scale: 0.8,
+        duration: 1.2,
+        ease: 'power4.out',
+        delay: 0.3
       });
 
-      // Scale animation para skill cards
-      scrollAnimations.setupScale('.scale-on-scroll', 0.85, 1);
+      // 2. Hero Subtitle - Slide up + fade
+      gsap.from('.hero-subtitle', {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: 'power3.out',
+        delay: 0.6
+      });
 
-      // Stagger para timeline
-      scrollAnimations.setupStagger('.timeline-item', 0.2);
+      // 3. Hero CTAs - Stagger con bounce
+      gsap.from('.hero-cta .btn', {
+        opacity: 0,
+        y: 30,
+        scale: 0.9,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'back.out(1.7)',
+        delay: 0.9
+      });
+
+      // 4. Skill Cards - Entrada con stagger
+      gsap.from('.skill-card', {
+        scrollTrigger: {
+          trigger: '.skills-grid',
+          start: 'top 80%',
+        },
+        opacity: 0,
+        y: 60,
+        scale: 0.9,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out'
+      });
+
+      // 5. Project Cards - Slide horizontal con fade
+      gsap.from('.project-card-large', {
+        scrollTrigger: {
+          trigger: '.projects-track',
+          start: 'top 80%',
+        },
+        opacity: 0,
+        x: -80,
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power3.out'
+      });
+
+      // 6. Timeline Items - Aparición secuencial
+      gsap.from('.timeline-item', {
+        scrollTrigger: {
+          trigger: '.timeline',
+          start: 'top 70%',
+        },
+        opacity: 0,
+        x: -50,
+        duration: 0.8,
+        stagger: 0.25,
+        ease: 'power2.out'
+      });
+
+      // 7. Section Titles - Scale + fade
+      gsap.utils.toArray('.section-title').forEach((title) => {
+        gsap.from(title, {
+          scrollTrigger: {
+            trigger: title,
+            start: 'top 85%',
+          },
+          opacity: 0,
+          scale: 0.8,
+          y: 30,
+          duration: 0.8,
+          ease: 'back.out(1.5)'
+        });
+      });
+
+      // 8. Contact Form - Slide from right
+      gsap.from('.contact-form-wrapper', {
+        scrollTrigger: {
+          trigger: '.contact-section',
+          start: 'top 70%',
+        },
+        opacity: 0,
+        x: 100,
+        duration: 1,
+        ease: 'power3.out'
+      });
 
       // Horizontal scroll para proyectos
       scrollAnimations.setupHorizontalScroll('.horizontal-scroll-wrapper', '.projects-track');
@@ -454,10 +539,12 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .hero-title {
-      font-size: clamp(3rem, 12vw, 10rem);
-      margin-bottom: 1rem;
+      font-size: clamp(4rem, 15vw, 12rem);
+      margin-bottom: 1.5rem;
       font-weight: 900;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      text-shadow: 0 10px 40px rgba(232, 166, 111, 0.4);
     }
 
     .text-reveal {
@@ -511,19 +598,45 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-gold));
       border: none;
-      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.4);
+      box-shadow: 0 10px 40px rgba(232, 166, 111, 0.4);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s var(--transition-elegant);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
     }
 
     .btn-primary:hover {
-      box-shadow: 0 15px 50px rgba(0, 255, 255, 0.6);
-      transform: translateY(-3px);
+      box-shadow: 0 15px 60px rgba(232, 166, 111, 0.6);
+      transform: translateY(-5px) scale(1.05);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(232, 166, 111, 0.1);
+      border: 2px solid var(--color-accent);
+      transition: all 0.3s var(--transition-elegant);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(232, 166, 111, 0.2);
+      border-color: var(--color-accent-gold);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(232, 166, 111, 0.3);
     }
 
     .scroll-indicator {
@@ -707,13 +820,31 @@ import Layout from '../layouts/Layout.astro';
       padding: 0;
       overflow: hidden;
       position: relative;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.5s var(--transition-elegant);
       flex-shrink: 0;
+      border: 1px solid rgba(232, 166, 111, 0.1);
+    }
+
+    .project-card-large::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(232, 166, 111, 0.1), transparent);
+      transition: left 0.8s;
+      z-index: 1;
+    }
+
+    .project-card-large:hover::before {
+      left: 100%;
     }
 
     .project-card-large:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 30px 80px rgba(0, 255, 255, 0.4);
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 30px 80px rgba(232, 166, 111, 0.5);
+      border-color: var(--color-accent);
     }
 
     .project-number {
@@ -740,12 +871,13 @@ import Layout from '../layouts/Layout.astro';
     .project-placeholder {
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
-      transition: all 0.4s;
+      background: linear-gradient(135deg, rgba(232, 166, 111, 0.3), rgba(255, 179, 71, 0.2));
+      transition: all 0.6s var(--transition-elegant);
     }
 
     .project-card-large:hover .project-placeholder {
-      transform: scale(1.1);
+      transform: scale(1.15) rotate(2deg);
+      background: linear-gradient(135deg, rgba(232, 166, 111, 0.4), rgba(255, 215, 0, 0.3));
     }
 
     .project-content {
@@ -773,19 +905,22 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .tech-tag {
-      padding: 0.4rem 1rem;
-      background: rgba(0, 255, 255, 0.1);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 6px;
+      padding: 0.5rem 1.2rem;
+      background: rgba(232, 166, 111, 0.15);
+      border: 1px solid rgba(232, 166, 111, 0.4);
+      border-radius: 8px;
       font-size: 0.9rem;
-      color: var(--color-accent);
-      font-weight: 600;
-      transition: all 0.3s;
+      color: var(--color-accent-gold);
+      font-weight: 700;
+      transition: all 0.4s var(--transition-elegant);
+      cursor: pointer;
     }
 
     .tech-tag:hover {
-      background: rgba(0, 255, 255, 0.2);
-      transform: translateY(-2px);
+      background: rgba(232, 166, 111, 0.3);
+      border-color: var(--color-accent-bright);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 5px 15px rgba(232, 166, 111, 0.3);
     }
 
     .project-links {

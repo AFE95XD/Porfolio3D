@@ -2,9 +2,11 @@
 :root {
   --color-bg: #0a0a0a;
   --color-text: #ffffff;
-  --color-text-secondary: #a0a0a0;
-  --color-accent: #00ffff;
-  --color-accent-secondary: #ff00ff;
+  --color-text-secondary: #C4A088;
+  --color-accent: #E8A66F; /* Naranja claro principal */
+  --color-accent-secondary: #D4834F; /* Naranja cálido */
+  --color-accent-gold: #FFB347; /* Dorado claro */
+  --color-accent-bright: #FFD700; /* Dorado brillante */
   --spacing-unit: 8px;
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -12,6 +14,7 @@
   /* Animations */
   --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-elegant: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Reset */
